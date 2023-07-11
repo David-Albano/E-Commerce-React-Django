@@ -1,13 +1,21 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import React, {useState, useEffect} from 'react'
+import { Link, useParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Button, Card} from 'react-bootstrap'
 import Rating from '../components/Rating'
-import products from '../products'
+import axios from 'axios'
 
 function ProductScreen() {
-    const { id } = useParams();
-    const product = products.find((product) => product._id === id);
+    const [product, setProduct] = useState([])
+    const { id } = useParams()
+
+    useEffect(() => {
+        async function fetchProduct() {
+            const {data} = await axios.get(`/api/products/${id}`)
+            setProduct(data)
+        }
+
+        fetchProduct();
+    }, [])
 
     return(
         <div>
@@ -27,7 +35,7 @@ function ProductScreen() {
                         </ListGroup.Item>
 
                         <ListGroup.Item>
-                            Price: {product.price}
+                            Price: €{product.price}
                         </ListGroup.Item>
 
                         <ListGroup.Item>
