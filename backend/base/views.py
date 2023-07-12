@@ -17,24 +17,8 @@ def getRoutes(request):
 
     return Response(routes)
 
-from .products import products
 @api_view(['GET'])
 def getProducts(request):
-
-    # for i in products:
-    #     Product.objects.create(
-    #             _id = i['_id'],
-    #             name = i['name'],
-    #             description = i['description'],
-    #             brand = i['brand'],
-    #             category = i['category'],
-    #             price = i['price'],
-    #             countInStock= i['countInStock'],
-    #             rating = i['rating'],
-    #             numReviews = i['numReviews'],
-    #     )
-    # print('CREATED')
-    # return Response('Created')
     products = Product.objects.all()
     products_serialized = ProductsSerializer(products, many=True)
 
