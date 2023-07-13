@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {Row, Col} from 'react-bootstrap'
-import Product from '../components/Products'
 import { useDispatch, useSelector } from 'react-redux'
 import { listProducts  } from '../actions/productActions'
+import Product from '../components/Products'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 
@@ -12,7 +12,7 @@ function HomeScreen() {
     const productList = useSelector(state => state.productList)
 
     const {error, loading, products } = productList
-    // error = 'AN ERROR HERE NOW'
+    
     useEffect(() => {
         dispatch(listProducts())
     }, [dispatch])
