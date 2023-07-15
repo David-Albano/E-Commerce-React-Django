@@ -24,7 +24,7 @@ function LoginScreen() {
         if (userInfo) {
             navigate('/')
         }
-    }, [navigate, userInfo, redirect])
+    }, [navigate, userInfo])
 
     const submitHandler = (e) => {
         e.preventDefault()
