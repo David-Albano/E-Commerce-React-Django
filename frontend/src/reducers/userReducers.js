@@ -9,9 +9,15 @@ import {
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAIL,
 
+    USER_DETAILS_REQUEST,
+    USER_DETAILS_SUCCESS,
+    USER_DETAILS_FAIL,
+    
     PROFILE_UPDATE_REQUEST,
     PROFILE_UPDATE_SUCCESS,
     PROFILE_UPDATE_FAIL,
+    PROFILE_UPDATE_RESET,
+
 } from '../constants/userConstants'
 
 export const userLoginReducer = (state = {}, action) => {
@@ -60,15 +66,36 @@ export const userRegisterReducer = (state = {}, action) => {
 export const userDetailsReducer = (state = { user: {} }, action) => {
     switch (action.type) {
         
-        // Update User Profile 
-        case PROFILE_UPDATE_REQUEST:
+        // Get user details
+        case USER_DETAILS_REQUEST:
             return {...state, loading: true}
 
-        case PROFILE_UPDATE_SUCCESS:
+        case USER_DETAILS_SUCCESS:
             return {loading: false, user: action.payload}
+
+        case USER_DETAILS_FAIL:
+            return {loading: false, error: action.payload}
+
+        default:
+            return state
+    }
+}
+
+export const userUpdateProfileReducer = (state = {}, action) => {
+    switch (action.type) {
+
+        // Update User Profile 
+        case PROFILE_UPDATE_REQUEST:
+            return {loading: true}
+
+        case PROFILE_UPDATE_SUCCESS:
+            return {loading: false, success: true, userInfo: action.payload}
 
         case PROFILE_UPDATE_FAIL:
             return {loading: false, error: action.payload}
+
+        case PROFILE_UPDATE_RESET:
+            return {}
 
         default:
             return state

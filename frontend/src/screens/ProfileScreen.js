@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails, updateUserProfile } from '../actions/userActions'
+import { PROFILE_UPDATE_RESET } from '../constants/userConstants'
 
 function ProfileScreen() {
     const [name, setName] = useState('')
@@ -23,19 +24,25 @@ function ProfileScreen() {
     const userDetails = useSelector(state => state.userDetails)
     const {loading, error, user} = userDetails
 
+    const userUpdateProfile = useSelector(state => state.userUpdateProfile)
+    const {success} = userUpdateProfile
+
     useEffect(() => {
         if(!userInfo) {
             navigate('/login')
         } else {
-            if(!user || !user.name) {
+            if(!user || !user.name || success) {
+                dispatch({type: PROFILE_UPDATE_RESET})
                 dispatch(getUserDetails('profile'))
+
             } else {
                 setName(user.name)
                 setEmail(user.email)
             }
         }
 
-    }, [dispatch, navigate, user, userInfo])
+    }, [dispatch, navigate, user, userInfo, success])
+
 
     const submitHandler = (e) => {
         e.preventDefault()
@@ -43,15 +50,21 @@ function ProfileScreen() {
         if(password != confirmPassword) {
             setMessage('Passwords do not match')
         } else {
-            console.log('Updating')
-            // dispatch(getUserDetails(name, email, password))
+            dispatch(updateUserProfile({
+                'id': user._id,
+                'name': name,
+                'email': email,
+                'password': password,
+            }))
+            console.log(success)
+            setMessage('Details successfully updated')
         }
     }
 
     return (
         <Row>
             <Col md={3}>
-                {message && <Message  variant='warning'>{message}</Message>}
+                {message && <Message  variant={success ? 'success' : 'warning'}>{message}</Message>}
                 {loading && <Loader />}
                 {error && <Message variant='danger'>{error}</Message>}
 
