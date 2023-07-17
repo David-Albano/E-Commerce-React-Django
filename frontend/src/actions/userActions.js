@@ -13,11 +13,11 @@ import {
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
     USER_DETAILS_FAIL,
+    USER_DETAILS_RESET,
     
     PROFILE_UPDATE_REQUEST,
     PROFILE_UPDATE_SUCCESS,
     PROFILE_UPDATE_FAIL,
-    PROFILE_UPDATE_RESET,
 
 } from '../constants/userConstants'
 
@@ -61,6 +61,11 @@ export const logout = () => (dispatch) => {
     dispatch({
         type: USER_LOGOUT
     })
+
+    dispatch({
+        type: USER_DETAILS_RESET
+    })
+
 }
 
 
