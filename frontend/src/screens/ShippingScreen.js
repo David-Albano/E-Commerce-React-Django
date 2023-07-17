@@ -9,7 +9,6 @@ import { saveShippingAddress } from '../actions/cartActions'
 function ShippingScreen() {
     const cart = useSelector(state => state.cart)
     const { shippingAddress } = cart
-    const { shippingInfo } = shippingAddress
 
     const [address, setAddress] = useState(shippingAddress.address)
     const [city, setCity] = useState(shippingAddress.city)
@@ -28,11 +27,6 @@ function ShippingScreen() {
 
         dispatch(saveShippingAddress({address, city, postalCode, country}))
         navigate('/payment')
-        
-        console.log('address: ', address)
-        console.log('city: ', city)
-        console.log('postalCode: ', postalCode)
-        console.log('country: ', country)
     }
 
     return (
