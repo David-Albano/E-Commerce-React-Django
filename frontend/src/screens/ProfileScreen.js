@@ -14,6 +14,8 @@ function ProfileScreen() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [message, setMessage] = useState('')
+    const [successUpdate, setSuccessUpdate] = useState(false)
+
     const navigate = useNavigate()
     
     const dispatch = useDispatch()
@@ -49,6 +51,7 @@ function ProfileScreen() {
 
         if(password != confirmPassword) {
             setMessage('Passwords do not match')
+            setSuccessUpdate(false)
         } else {
             dispatch(updateUserProfile({
                 'id': user._id,
@@ -56,7 +59,7 @@ function ProfileScreen() {
                 'email': email,
                 'password': password,
             }))
-            console.log(success)
+            setSuccessUpdate(true)
             setMessage('Details successfully updated')
         }
     }
@@ -64,7 +67,7 @@ function ProfileScreen() {
     return (
         <Row>
             <Col md={3}>
-                {message && <Message  variant={success ? 'success' : 'warning'}>{message}</Message>}
+                {message && <Message  variant={successUpdate ? 'success' : 'warning'}>{message}</Message>}
                 {loading && <Loader />}
                 {error && <Message variant='danger'>{error}</Message>}
 
