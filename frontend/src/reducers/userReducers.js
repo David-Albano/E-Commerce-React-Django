@@ -8,9 +8,13 @@ import {
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
     USER_REGISTER_FAIL,
+
+    PROFILE_UPDATE_REQUEST,
+    PROFILE_UPDATE_SUCCESS,
+    PROFILE_UPDATE_FAIL,
 } from '../constants/userConstants'
 
-export const userLoginReducer = (state = { }, action) => {
+export const userLoginReducer = (state = {}, action) => {
     switch (action.type) {
         
         // Login
@@ -47,6 +51,24 @@ export const userRegisterReducer = (state = {}, action) => {
 
         case USER_LOGOUT:
             return {}
+
+        default:
+            return state
+    }
+}
+
+export const userDetailsReducer = (state = { user: {} }, action) => {
+    switch (action.type) {
+        
+        // Update User Profile 
+        case PROFILE_UPDATE_REQUEST:
+            return {...state, loading: true}
+
+        case PROFILE_UPDATE_SUCCESS:
+            return {loading: false, user: action.payload}
+
+        case PROFILE_UPDATE_FAIL:
+            return {loading: false, error: action.payload}
 
         default:
             return state
