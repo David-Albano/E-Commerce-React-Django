@@ -5,17 +5,23 @@ import { useParams } from 'react-router-dom'
 import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { getOrderDetails } from '../actions/orderActions'
+import { getOrderDetails, payOrder } from '../actions/orderActions'
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
 function OrderScreen() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const [sdkReady, setSdkReady] = useState(false)
     
     const { id } = useParams()
 
     const orderDetails = useSelector(state => state.orderDetails)
-
     const {loading, error, order} = orderDetails
+
+    const orderPay = useSelector(state => state.orderPay)
+    const {loading: loadingPay , success: successPay} = orderPay
 
     if(!loading && !error) {
         order.itemsPrice = order.orderItems.reduce((totalPrice, item) => totalPrice + (item.qty * item.price), 0).toFixed(2)
@@ -23,9 +29,19 @@ function OrderScreen() {
 
     useEffect(() => {
         if(!order || order._id !== Number(id)) {
+            dispatch({
+                type: ORDER_PAY_RESET
+            })
             dispatch(getOrderDetails(id))
+
         }
-    }, [dispatch, order, id])
+
+    }, [dispatch, order, id, successPay])
+
+    const successPaymentHandler = (paymentResult) => {
+        console.log('paymentResult: ', paymentResult)
+        dispatch(payOrder(id, paymentResult))
+    }
 
     return loading ? (
         <Loader/>
@@ -133,6 +149,43 @@ function OrderScreen() {
                                     <Col>€{order.totalPrice}</Col>
                                 </Row>
                             </ListGroup.Item>
+
+                            {!order.isPaid && (
+                                <ListGroup.Item>
+                                    {loadingPay && <Loader />}
+                                    
+                                    <br/>
+                                    {sdkReady ? (
+                                        <Loader />
+                                        ): (
+                                            <PayPalScriptProvider
+                                                >
+                                                    <PayPalButtons
+                                                        forceReRender={[order.totalPrice, 'USD', null]}
+                                                        createOrder={(data, actions) => {
+                                                            console.log('data: ', data)
+                                                            console.log('actions: ', actions)
+                                                            
+                                                            return actions.order.create({
+                                                                purchase_units: [
+                                                                    {
+                                                                        amount: {
+                                                                            currency_code: 'USD',
+                                                                            value: order.totalPrice,
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            });
+                                                        }}
+                                                        onSuccess={(details, data) => {
+                                                            successPaymentHandler(data);
+                                                        }}
+                                                        />
+                                            </PayPalScriptProvider>
+                                        )
+                                    }
+                                </ListGroup.Item>
+                            )}
                         </ListGroup>
                     </Card>
                 </Col>
