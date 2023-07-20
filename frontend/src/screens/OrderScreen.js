@@ -39,7 +39,6 @@ function OrderScreen() {
     }, [dispatch, order, id, successPay])
 
     const successPaymentHandler = (paymentResult) => {
-        console.log('paymentResult: ', paymentResult)
         dispatch(payOrder(id, paymentResult))
     }
 
@@ -163,8 +162,6 @@ function OrderScreen() {
                                                     <PayPalButtons
                                                         forceReRender={[order.totalPrice, 'USD', null]}
                                                         createOrder={(data, actions) => {
-                                                            console.log('data: ', data)
-                                                            console.log('actions: ', actions)
                                                             
                                                             return actions.order.create({
                                                                 purchase_units: [
@@ -175,10 +172,12 @@ function OrderScreen() {
                                                                         },
                                                                     },
                                                                 ],
-                                                            });
+                                                            })
                                                         }}
-                                                        onSuccess={(details, data) => {
-                                                            successPaymentHandler(data);
+                                                        onApprove={function (data, actions) {
+                                                            return actions.order.capture().then(function () {
+                                                                successPaymentHandler();
+                                                            });
                                                         }}
                                                         />
                                             </PayPalScriptProvider>
