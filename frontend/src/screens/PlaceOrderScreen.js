@@ -4,8 +4,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
-import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 import { createOrder } from '../actions/orderActions'
+import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
     const dispatch = useDispatch()
@@ -33,6 +33,7 @@ function PlaceOrderScreen() {
 
         if (success) {
             navigate(`/order/${order._id}`)
+            dispatch({type: ORDER_CREATE_RESET})
         }
 
     }, [success, navigate])
