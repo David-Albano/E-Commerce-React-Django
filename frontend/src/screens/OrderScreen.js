@@ -11,17 +11,14 @@ import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
 function OrderScreen() {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
 
-    const [sdkReady, setSdkReady] = useState(false)
-    
     const { id } = useParams()
 
     const orderDetails = useSelector(state => state.orderDetails)
     const {loading, error, order} = orderDetails
 
     const orderPay = useSelector(state => state.orderPay)
-    const {loading: loadingPay , success: successPay} = orderPay
+    const {loading: loadingPay} = orderPay
 
     if(!loading && !error) {
         order.itemsPrice = order.orderItems.reduce((totalPrice, item) => totalPrice + (item.qty * item.price), 0).toFixed(2)
@@ -36,7 +33,7 @@ function OrderScreen() {
 
         }
 
-    }, [dispatch, order, id, successPay])
+    }, [dispatch, order, id])
 
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(id, paymentResult))
@@ -154,7 +151,7 @@ function OrderScreen() {
                                     {loadingPay && <Loader />}
                                     
                                     <br/>
-                                    {sdkReady ? (
+                                    {loading ? (
                                         <Loader />
                                         ): (
                                             <PayPalScriptProvider
