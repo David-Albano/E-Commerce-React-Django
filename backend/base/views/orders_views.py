@@ -15,7 +15,7 @@ from datetime import datetime
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):
-    user = User.objects.get(pk=request.data.get('id'))
+    user = User.objects.get(pk=request.user.pk)
     data = request.data
 
     orderItems = data['orderItems']
@@ -46,7 +46,7 @@ def addOrderItems(request):
 
         # (3) Create order items adn set order to orderItem relationship
         for i in orderItems:
-            product = Product.objects.get(_id=i['product'])
+            product = Product.objects.get(_id=i['_id'])
 
             item = OrderItem.objects.create(
                 product=product,

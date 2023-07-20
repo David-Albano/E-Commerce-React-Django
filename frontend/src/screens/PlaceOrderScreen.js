@@ -5,6 +5,7 @@ import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
+import { createOrder } from '../actions/orderActions'
 
 function PlaceOrderScreen() {
     const dispatch = useDispatch()
@@ -12,6 +13,10 @@ function PlaceOrderScreen() {
 
     // const orderCreate = useSelector(state => state.orderCreate)
     // const {order, error, success} = orderCreate
+
+    const orderCreate = useSelector(state => state.orderCreate)
+
+    const {success, error, order} = orderCreate
 
     const cart = useSelector(state => state.cart)
 
@@ -21,16 +26,28 @@ function PlaceOrderScreen() {
 
     cart.totalPrice = (Number(cart.totalItemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
 
-    if (!cart.paymentMethod) {
-        navigate('/payment')
-    }
-
     useEffect(() => {
+        if (!cart.paymentMethod) {
+            navigate('/payment')
+        }
 
-    }, [])
+        if (success) {
+            navigate(`/order/${order._id}`)
+        }
+
+    }, [success, navigate])
 
     const placeOrder = () => {
-        console.log('ordering')
+        dispatch(createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            totalItemsPrice: cart.totalItemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice,
+
+        }))
     }
 
     return (
@@ -124,6 +141,7 @@ function PlaceOrderScreen() {
                             </ListGroup.Item>
 
                             <ListGroup.Item>
+                                {error && <Message variant='danger'>{error}</Message> }
                             </ListGroup.Item>
 
                             <ListGroup.Item>
