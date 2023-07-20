@@ -81,7 +81,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
         })
 
         const {
-            userLogin: {userInfo}
+            userLogin: { userInfo },
         } = getState()
 
         const config = {
@@ -91,19 +91,22 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/orders/${id}/`, config)
+        const { data } = await axios.get(
+            `/api/orders/${id}/`,
+            config
+        )
 
         dispatch({
             type: ORDER_DETAILS_SUCCESS,
-            payload: data,
+            payload: data
         })
 
     } catch (error) {
         dispatch({
             type: ORDER_DETAILS_FAIL,
             payload: error.response && error.response.data.detail
-                            ? error.response.data.detail
-                            : error.message
+                ? error.response.data.detail
+                : error.message,
         })
     }
-} 
+}
