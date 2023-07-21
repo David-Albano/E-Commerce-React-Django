@@ -19,7 +19,6 @@ function ProfileScreen() {
     const [successUpdate, setSuccessUpdate] = useState(false)
 
     const navigate = useNavigate()
-    
     const dispatch = useDispatch()
     
     const userLogin = useSelector(state => state.userLogin)
